@@ -95,7 +95,12 @@
         <p>
           Upload your logo next and we can style this page around your exact brand identity. The foundation is ready to impress and convert.
         </p>
-        <a class="button" href="#">Reserve Your Spot</a>
+        <a class="button" href="#signup-form">Reserve Your Spot</a>
+        <form id="signup-form" class="signup-form" action="https://formspree.io/f/your-form-id" method="POST">
+          <label for="email" class="visually-hidden">Email address</label>
+          <input id="email" name="email" type="email" placeholder="Enter your email" required />
+          <button type="submit" class="button">Reserve via Email</button>
+        </form>
       </section>
     </main>
   </body>
