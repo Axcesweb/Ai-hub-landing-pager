@@ -1,3 +1,17 @@
-import Image from 'next/image';
 import { Course } from '@/types';
-export const CourseCard = ({ course }: { course: Course }) => (<article className='card'><Image src={course.cover} alt={course.title} width={480} height={280} style={{width:'100%',height:'auto',borderRadius:12}}/><h3>{course.title}</h3><p className='badge'>{course.level} • {course.lessons} lessons</p></article>);
+
+export const CourseCard = ({ course }: { course: Course }) => {
+  const lessonsCount = course.modules.reduce((sum, m) => sum + m.lessons.length, 0);
+
+  return (
+    <article className='card'>
+      <h3>{course.title}</h3>
+      <p>{course.description}</p>
+      <p className='muted'>{course.instructor} • {course.difficulty}</p>
+      <p className='muted'>{lessonsCount} lessons • Badge: {course.badge}</p>
+      <div className='progress' style={{ marginTop: 8 }}>
+        <span style={{ width: `${course.progress}%` }} />
+      </div>
+    </article>
+  );
+};
