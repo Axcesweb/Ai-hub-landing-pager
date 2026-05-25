@@ -1,2 +1,11 @@
-import { createClient } from '@supabase/supabase-js';
-export const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL || '', process.env.SUPABASE_SERVICE_ROLE_KEY || '');
+type SupabaseClientConfig = {
+  url: string;
+  serviceRoleKey: string;
+};
+
+export function getSupabaseConfig(): SupabaseClientConfig {
+  return {
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  };
+}
