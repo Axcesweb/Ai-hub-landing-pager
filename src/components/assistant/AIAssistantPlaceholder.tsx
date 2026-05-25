@@ -1,0 +1,1 @@
+export const AIAssistantPlaceholder = () => <aside className='card'><h3>AI Assistant (Placeholder)</h3><p className='badge'>Future: contextual Q&A, summaries, and creator tooling.</p><button className='btn'>Launch Assistant</button></aside>;
