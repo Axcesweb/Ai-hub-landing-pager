@@ -82,3 +82,8 @@ SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
 npm install
 npm run dev
 ```
+
+## Build/install note (environment restriction)
+- This repository currently has an **external infrastructure constraint** in some environments: `npm install` may fail with `403 Forbidden` when fetching from `https://registry.npmjs.org` (including `next`).
+- When that occurs, it is a **package registry/network access issue**, not an application-code issue in this repo.
+- `npm run build` requires dependencies to be installed first, so build validation must be performed in an environment with npm registry access (or an internal mirror/proxy that permits these packages).
