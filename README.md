@@ -74,11 +74,21 @@ Create `.env.local`:
 ```bash
 JWT_SECRET=replace-with-strong-secret
 NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-anon-key>
 SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
 ```
+
+### Supabase SSR requirements
+- `@supabase/ssr` is required for the helpers in `src/utils/supabase/{client,server,middleware}.ts`.
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` is required for browser/server SSR session helpers.
 
 ## Run
 ```bash
 npm install
 npm run dev
 ```
+
+## Build/install note (environment restriction)
+- This repository currently has an **external infrastructure constraint** in some environments: `npm install` may fail with `403 Forbidden` when fetching from `https://registry.npmjs.org` (including `next`).
+- When that occurs, it is a **package registry/network access issue**, not an application-code issue in this repo.
+- `npm run build` requires dependencies to be installed first, so build validation must be performed in an environment with npm registry access (or an internal mirror/proxy that permits these packages).
