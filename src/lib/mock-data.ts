@@ -40,3 +40,14 @@ export const reportedContent: ReportItem[] = [
   { id:'r2', targetType:'user', targetRef:'u9', reportReason:'Spam activity', reportedAt:'2026-05-25', priority:'high' }
 ];
 export const analytics: Analytics = { dau: 8421, newUsers7d: 1290, pendingModeration: 14, completionRate: 67 };
+
+
+export const news = [
+  { id:'n1', headline:'Open-source multimodal assistants accelerate learning', source:'AI Hub Daily', publishedAt:'2026-05-25' },
+  { id:'n2', headline:'New benchmarks focus on reliability over raw scores', source:'Model Weekly', publishedAt:'2026-05-24' }
+];
+
+export const posts = [
+  { id:'p1', author:'@maya', content:'Shared my first course project demo today 🚀', likes:31 },
+  { id:'p2', author:'@dante', content:'Anyone comparing RAG frameworks this month?', likes:17 }
+];
