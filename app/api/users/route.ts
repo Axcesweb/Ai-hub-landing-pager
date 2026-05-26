@@ -1,44 +1,75 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getProfile, getProfileByUsername, searchUsers, updateProfile } from '@/lib/services/users'
+import { createClient } from '@/lib/supabase/server'
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    const limit = searchParams.get('limit') || '20'
+    const username = searchParams.get('username')
+    const userId = searchParams.get('id')
+    const search = searchParams.get('search')
 
-    // Mock get users list
-    return NextResponse.json({
-      success: true,
-      data: {
-        users: [],
-      },
-    })
-  } catch (error) {
+    if (search) {
+      const results = await searchUsers(search)
+      return NextResponse.json({
+        success: true,
+        data: results,
+      })
+    }
+
+    if (username) {
+      const user = await getProfileByUsername(username)
+      return NextResponse.json({
+        success: true,
+        data: user,
+      })
+    }
+
+    if (userId) {
+      const user = await getProfile(userId)
+      return NextResponse.json({
+        success: true,
+        data: user,
+      })
+    }
+
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch users' },
+      { success: false, error: 'Username or ID required' },
+      { status: 400 }
+    )
+  } catch (error) {
+    console.error('User fetch error:', error)
+    return NextResponse.json(
+      { success: false, error: 'Failed to fetch user' },
       { status: 500 }
     )
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function PATCH(request: NextRequest) {
   try {
-    const body = await request.json()
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
 
-    // Mock create/update user
-    return NextResponse.json(
-      {
-        success: true,
-        data: {
-          id: 'user-' + Date.now(),
-          ...body,
-        },
-      },
-      { status: 201 }
-    )
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    const body = await request.json()
+    const updated = await updateProfile(user.id, body)
+
+    return NextResponse.json({
+      success: true,
+      data: updated,
+    })
   } catch (error) {
+    console.error('User update error:', error)
     return NextResponse.json(
-      { success: false, error: 'Failed to process user' },
-      { status: 400 }
+      { success: false, error: 'Failed to update user' },
+      { status: 500 }
     )
   }
 }

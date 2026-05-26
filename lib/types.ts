@@ -15,6 +15,22 @@ export interface User {
   updatedAt: string;
 }
 
+export interface Profile {
+  id: string;
+  username: string;
+  display_name?: string;
+  bio?: string;
+  avatar_url?: string;
+  cover_image_url?: string;
+  followers_count: number;
+  following_count: number;
+  is_creator: boolean;
+  is_verified: boolean;
+  is_admin: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Creator extends User {
   category: string;
   socialLinks?: Record<string, string>;

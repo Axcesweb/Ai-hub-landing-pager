@@ -1,29 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Video } from '@/lib/types'
+import { getVideos, createVideo } from '@/lib/services/videos'
+import { createClient } from '@/lib/supabase/server'
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    const page = searchParams.get('page') || '1'
-    const limit = searchParams.get('limit') || '20'
-    const category = searchParams.get('category')
+    const limit = parseInt(searchParams.get('limit') || '20')
+    const offset = parseInt(searchParams.get('offset') || '0')
 
-    // Mock data
-    const videos: Video[] = []
+    const videos = await getVideos(limit, offset)
 
     return NextResponse.json({
       success: true,
-      data: {
-        videos,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total: 0,
-          hasMore: false,
-        },
-      },
+      data: videos,
+      count: videos?.length || 0,
     })
   } catch (error) {
+    console.error('Videos fetch error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to fetch videos' },
       { status: 500 }
@@ -33,23 +26,31 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
 
-    // Mock create video
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    const body = await request.json()
+    const newVideo = await createVideo({
+      user_id: user.id,
+      ...body,
+    })
+
     return NextResponse.json(
-      {
-        success: true,
-        data: {
-          id: 'video-' + Date.now(),
-          ...body,
-        },
-      },
+      { success: true, data: newVideo },
       { status: 201 }
     )
   } catch (error) {
+    console.error('Video creation error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to create video' },
-      { status: 400 }
+      { status: 500 }
     )
   }
 }
