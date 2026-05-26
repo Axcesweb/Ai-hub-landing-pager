@@ -2,21 +2,32 @@
 
 import React, { useState, useEffect } from 'react'
 import { VideoCard } from '@/components/video/video-card'
-import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Video } from '@/lib/types'
 
 export default function VideosPage() {
-  const [videos, setVideos] = useState<Video[]>([])
+  const [videos, setVideos] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [page, setPage] = useState(0)
 
   useEffect(() => {
-    // Mock data loading
-    setTimeout(() => {
-      setVideos([])
+    fetchVideos()
+  }, [page])
+
+  const fetchVideos = async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch(`/api/videos?limit=20&offset=${page * 20}`)
+      const result = await response.json()
+
+      if (result.success) {
+        setVideos(result.data || [])
+      }
+    } catch (error) {
+      console.error('[v0] Failed to fetch videos:', error)
+    } finally {
       setIsLoading(false)
-    }, 500)
-  }, [])
+    }
+  }
 
   return (
     <div className="space-y-6 p-6">
@@ -39,7 +50,7 @@ export default function VideosPage() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {videos.map((video) => (
+          {videos.map((video: any) => (
             <VideoCard key={video.id} video={video} />
           ))}
         </div>

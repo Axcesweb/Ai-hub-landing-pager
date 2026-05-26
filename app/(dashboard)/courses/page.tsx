@@ -3,19 +3,30 @@
 import { useState, useEffect } from 'react'
 import { CourseCard } from '@/components/course/course-card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Course } from '@/lib/types'
 
 export default function CoursesPage() {
-  const [courses, setCourses] = useState<Course[]>([])
+  const [courses, setCourses] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Mock data loading
-    setTimeout(() => {
-      setCourses([])
-      setIsLoading(false)
-    }, 500)
+    fetchCourses()
   }, [])
+
+  const fetchCourses = async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch('/api/courses?limit=20&offset=0')
+      const result = await response.json()
+
+      if (result.success) {
+        setCourses(result.data || [])
+      }
+    } catch (error) {
+      console.error('[v0] Failed to fetch courses:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <div className="space-y-6 p-6">
@@ -38,7 +49,7 @@ export default function CoursesPage() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {courses.map((course) => (
+          {courses.map((course: any) => (
             <CourseCard key={course.id} course={course} />
           ))}
         </div>
